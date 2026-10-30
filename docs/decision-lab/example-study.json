@@ -1,0 +1,30 @@
+{
+  "mode": "fixture",
+  "audience": "People browsing local artwork.",
+  "question": "Which print should we test?",
+  "scenario": "Two prints share the same display.",
+  "context": "Controlled example only.",
+  "budget": 35,
+  "alternatives": [
+    {
+      "id": "A",
+      "title": "Local print",
+      "description": "Playful local art.",
+      "price": 30,
+      "features": [
+        "originality",
+        "local_story"
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Minimal print",
+      "description": "Minimal premium art.",
+      "price": 30,
+      "features": [
+        "simplicity",
+        "premium_finish"
+      ]
+    }
+  ]
+}

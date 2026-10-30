@@ -1,0 +1,5 @@
+-r requirements-decision-lab.txt
+# Needed for original MiroFish compatibility tests and the mocked local adapter.
+python-dotenv>=1,<2
+openai>=1,<3
+pytest>=8,<10

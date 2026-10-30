@@ -1,0 +1,388 @@
+{
+  "comparison": [
+    {
+      "count": 2,
+      "id": "A",
+      "share_of_synthetic_panel": 33.3,
+      "title": "Cafecito on Las Olas"
+    },
+    {
+      "count": 1,
+      "id": "B",
+      "share_of_synthetic_panel": 16.7,
+      "title": "Quiet Canal"
+    },
+    {
+      "count": 3,
+      "id": "none",
+      "share_of_synthetic_panel": 50,
+      "title": "None / no clear preference"
+    }
+  ],
+  "created_at": "2026-10-30T15:34:47.705771+00:00",
+  "method": {
+    "confidence": null,
+    "engine": "deterministic-rules-v1",
+    "human_participants": 0,
+    "limitations": [
+      "Six invented perspectives; no population sampling or demographic representativeness.",
+      "Shared model or rules can produce correlated errors. Larger synthetic counts do not validate accuracy.",
+      "Images are browser-only previews and are never analyzed.",
+      "Only assigned attributes and prices affect fixture choices; text is context only in local-model mode.",
+      "Local-model opinions are AI-generated hypotheses; rules-demo responses are templates."
+    ],
+    "mode": "fixture",
+    "model": null,
+    "predictive_accuracy": null,
+    "synthetic_agents": 6,
+    "validation_status": "Not validated against human responses"
+  },
+  "next_steps": [
+    "Show these alternatives in varied order to people from the intended audience.",
+    "Collect unaided reasons, objections and a none-of-these response before revealing these hypotheses.",
+    "Use a consented real-world test to measure behavior; keep its results separate from this simulation."
+  ],
+  "notice": "Synthetic responses, not customer research. No human validation, measured confidence, purchase probability, or population estimate is available.",
+  "panel": [
+    {
+      "budget_limit": 26.25,
+      "profile": {
+        "age": null,
+        "bio": "Invented decision lens; not a real person.",
+        "country": null,
+        "created_at": "2026-10-30",
+        "follower_count": 150,
+        "friend_count": 100,
+        "gender": null,
+        "interested_topics": [
+          "value",
+          "practicality"
+        ],
+        "karma": 1000,
+        "mbti": null,
+        "name": "Value seeker",
+        "persona": "Invented value seeker perspective for the stated audience: Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+        "profession": null,
+        "source_entity_type": null,
+        "source_entity_uuid": null,
+        "statuses_count": 500,
+        "user_id": 0,
+        "user_name": "synthetic_1"
+      },
+      "weights": {
+        "practicality": 1,
+        "value": 3
+      }
+    },
+    {
+      "budget_limit": 52.5,
+      "profile": {
+        "age": null,
+        "bio": "Invented decision lens; not a real person.",
+        "country": null,
+        "created_at": "2026-10-30",
+        "follower_count": 150,
+        "friend_count": 100,
+        "gender": null,
+        "interested_topics": [
+          "originality",
+          "premium_finish"
+        ],
+        "karma": 1000,
+        "mbti": null,
+        "name": "Design explorer",
+        "persona": "Invented design explorer perspective for the stated audience: Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+        "profession": null,
+        "source_entity_type": null,
+        "source_entity_uuid": null,
+        "statuses_count": 500,
+        "user_id": 1,
+        "user_name": "synthetic_2"
+      },
+      "weights": {
+        "originality": 3,
+        "premium_finish": 1
+      }
+    },
+    {
+      "budget_limit": 35,
+      "profile": {
+        "age": null,
+        "bio": "Invented decision lens; not a real person.",
+        "country": null,
+        "created_at": "2026-10-30",
+        "follower_count": 150,
+        "friend_count": 100,
+        "gender": null,
+        "interested_topics": [
+          "simplicity",
+          "practicality"
+        ],
+        "karma": 1000,
+        "mbti": null,
+        "name": "Minimalist",
+        "persona": "Invented minimalist perspective for the stated audience: Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+        "profession": null,
+        "source_entity_type": null,
+        "source_entity_uuid": null,
+        "statuses_count": 500,
+        "user_id": 2,
+        "user_name": "synthetic_3"
+      },
+      "weights": {
+        "practicality": 1,
+        "simplicity": 3
+      }
+    },
+    {
+      "budget_limit": 43.75,
+      "profile": {
+        "age": null,
+        "bio": "Invented decision lens; not a real person.",
+        "country": null,
+        "created_at": "2026-10-30",
+        "follower_count": 150,
+        "friend_count": 100,
+        "gender": null,
+        "interested_topics": [
+          "local_story",
+          "originality"
+        ],
+        "karma": 1000,
+        "mbti": null,
+        "name": "Local supporter",
+        "persona": "Invented local supporter perspective for the stated audience: Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+        "profession": null,
+        "source_entity_type": null,
+        "source_entity_uuid": null,
+        "statuses_count": 500,
+        "user_id": 3,
+        "user_name": "synthetic_4"
+      },
+      "weights": {
+        "local_story": 3,
+        "originality": 1
+      }
+    },
+    {
+      "budget_limit": 35,
+      "profile": {
+        "age": null,
+        "bio": "Invented decision lens; not a real person.",
+        "country": null,
+        "created_at": "2026-10-30",
+        "follower_count": 150,
+        "friend_count": 100,
+        "gender": null,
+        "interested_topics": [
+          "practicality",
+          "value"
+        ],
+        "karma": 1000,
+        "mbti": null,
+        "name": "Practical buyer",
+        "persona": "Invented practical buyer perspective for the stated audience: Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+        "profession": null,
+        "source_entity_type": null,
+        "source_entity_uuid": null,
+        "statuses_count": 500,
+        "user_id": 4,
+        "user_name": "synthetic_5"
+      },
+      "weights": {
+        "practicality": 3,
+        "value": 1
+      }
+    },
+    {
+      "budget_limit": 26.25,
+      "profile": {
+        "age": null,
+        "bio": "Invented decision lens; not a real person.",
+        "country": null,
+        "created_at": "2026-10-30",
+        "follower_count": 150,
+        "friend_count": 100,
+        "gender": null,
+        "interested_topics": [
+          "value",
+          "simplicity"
+        ],
+        "karma": 1000,
+        "mbti": null,
+        "name": "Cautious buyer",
+        "persona": "Invented cautious buyer perspective for the stated audience: Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+        "profession": null,
+        "source_entity_type": null,
+        "source_entity_uuid": null,
+        "statuses_count": 500,
+        "user_id": 5,
+        "user_name": "synthetic_6"
+      },
+      "weights": {
+        "simplicity": 1,
+        "value": 1
+      }
+    }
+  ],
+  "responses": [
+    {
+      "agent_id": 0,
+      "choice": "none",
+      "evaluations": [
+        {
+          "alternative_id": "A",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price exceeds this invented budget limit (26.25).",
+          "rule_points": -4
+        },
+        {
+          "alternative_id": "B",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price exceeds this invented budget limit (26.25).",
+          "rule_points": -4
+        }
+      ],
+      "follow_up": "Ask real people what would make them prefer or reject each option.",
+      "reason": "No clear preference: the rules tie or no alternative has a positive total.",
+      "tradeoff": "Descriptions, audience wording, scenario and reference notes are recorded but not interpreted by this rules demo."
+    },
+    {
+      "agent_id": 1,
+      "choice": "A",
+      "evaluations": [
+        {
+          "alternative_id": "A",
+          "appeal": "Matching assigned attributes: Originality.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 3
+        },
+        {
+          "alternative_id": "B",
+          "appeal": "Matching assigned attributes: Premium finish.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 1
+        }
+      ],
+      "follow_up": "Ask real people what would make them prefer or reject each option.",
+      "reason": "The assigned attributes and budget rule give this option a unique positive total.",
+      "tradeoff": "Descriptions, audience wording, scenario and reference notes are recorded but not interpreted by this rules demo."
+    },
+    {
+      "agent_id": 2,
+      "choice": "B",
+      "evaluations": [
+        {
+          "alternative_id": "A",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 0
+        },
+        {
+          "alternative_id": "B",
+          "appeal": "Matching assigned attributes: Simplicity.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 3
+        }
+      ],
+      "follow_up": "Ask real people what would make them prefer or reject each option.",
+      "reason": "The assigned attributes and budget rule give this option a unique positive total.",
+      "tradeoff": "Descriptions, audience wording, scenario and reference notes are recorded but not interpreted by this rules demo."
+    },
+    {
+      "agent_id": 3,
+      "choice": "A",
+      "evaluations": [
+        {
+          "alternative_id": "A",
+          "appeal": "Matching assigned attributes: Local story, Originality.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 4
+        },
+        {
+          "alternative_id": "B",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 0
+        }
+      ],
+      "follow_up": "Ask real people what would make them prefer or reject each option.",
+      "reason": "The assigned attributes and budget rule give this option a unique positive total.",
+      "tradeoff": "Descriptions, audience wording, scenario and reference notes are recorded but not interpreted by this rules demo."
+    },
+    {
+      "agent_id": 4,
+      "choice": "none",
+      "evaluations": [
+        {
+          "alternative_id": "A",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 0
+        },
+        {
+          "alternative_id": "B",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price is within the invented budget; willingness to pay remains unknown.",
+          "rule_points": 0
+        }
+      ],
+      "follow_up": "Ask real people what would make them prefer or reject each option.",
+      "reason": "No clear preference: the rules tie or no alternative has a positive total.",
+      "tradeoff": "Descriptions, audience wording, scenario and reference notes are recorded but not interpreted by this rules demo."
+    },
+    {
+      "agent_id": 5,
+      "choice": "none",
+      "evaluations": [
+        {
+          "alternative_id": "A",
+          "appeal": "Matching assigned attributes: none.",
+          "concern": "Price exceeds this invented budget limit (26.25).",
+          "rule_points": -4
+        },
+        {
+          "alternative_id": "B",
+          "appeal": "Matching assigned attributes: Simplicity.",
+          "concern": "Price exceeds this invented budget limit (26.25).",
+          "rule_points": -3
+        }
+      ],
+      "follow_up": "Ask real people what would make them prefer or reject each option.",
+      "reason": "No clear preference: the rules tie or no alternative has a positive total.",
+      "tradeoff": "Descriptions, audience wording, scenario and reference notes are recorded but not interpreted by this rules demo."
+    }
+  ],
+  "run_id": "e67d80a77ec71faa",
+  "schema_version": "decision-lab/1.0",
+  "study": {
+    "alternatives": [
+      {
+        "description": "A playful hand-drawn café scene with a local story and bright, unexpected colors.",
+        "features": [
+          "local_story",
+          "originality"
+        ],
+        "id": "A",
+        "price": 30,
+        "title": "Cafecito on Las Olas"
+      },
+      {
+        "description": "A minimal canal illustration with calm colors and a simple composition, printed on premium paper.",
+        "features": [
+          "premium_finish",
+          "simplicity"
+        ],
+        "id": "B",
+        "price": 30,
+        "title": "Quiet Canal"
+      }
+    ],
+    "audience": "Visitors browsing an independent art stand on Las Olas Boulevard, Fort Lauderdale.",
+    "budget": 35,
+    "context": "",
+    "mode": "fixture",
+    "question": "Which A305X print concept is worth testing with real visitors?",
+    "scenario": "A visitor sees two equally sized prints displayed side by side. Both are available to take home today."
+  }
+}

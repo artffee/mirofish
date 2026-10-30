@@ -6,6 +6,14 @@ A swarm intelligence prediction engine. Upload documents describing any scenario
 
 > Fork of [666ghj/MiroFish](https://github.com/666ghj/MiroFish) — fully translated to English, local graph storage with embedded KuzuDB by default, Claude/Codex CLI support added.
 
+## Decision Lab prototype (added October 30, 2026)
+
+Compare two or three artwork, product, message or price alternatives at `/decision-lab`. Includes six invented perspectives, structured explanations, comparison charts and JSON/CSV/text downloads. The default rules demo runs without API keys or model calls; an explicitly enabled local-model adapter is optional. All results are synthetic and unvalidated, with no measured confidence or purchase predictions.
+
+[Run the prototype and read its limitations](docs/decision-lab/README.md) · [Verification evidence](docs/decision-lab/VERIFICATION.md)
+
+The original MiroFish workflows below remain available. This modified version retains AGPL-3.0.
+
 ## What it does
 
 1. **Upload reality seeds** — PDFs, markdown, or text files (news articles, policy drafts, financial reports, anything)

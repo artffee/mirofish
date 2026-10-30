@@ -12,13 +12,13 @@ warnings.filterwarnings("ignore", message=".*resource_tracker.*")
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 
-from .config import Config
-from .services.graph_storage import JSONStorage, KuzuDBStorage
-from .utils.logger import setup_logger, get_logger
 
-
-def create_app(config_class=Config):
+def create_app(config_class=None):
     """Flask application factory function"""
+    from .config import Config
+    from .services.graph_storage import JSONStorage, KuzuDBStorage
+    from .utils.logger import setup_logger, get_logger
+    config_class = config_class or Config
     frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../frontend/dist'))
     app = Flask(__name__, static_folder=frontend_dist if os.path.isdir(frontend_dist) else None)
     app.config.from_object(config_class)
@@ -62,7 +62,7 @@ def create_app(config_class=Config):
     def log_request():
         logger = get_logger('mirofish.request')
         logger.debug(f"Request: {request.method} {request.path}")
-        if app.config.get('DEBUG') and request.content_type and 'json' in request.content_type:
+        if not request.path.startswith('/api/decision-lab') and app.config.get('DEBUG') and request.content_type and 'json' in request.content_type:
             logger.debug(f"Request body: {request.get_json(silent=True)}")
     
     @app.after_request
@@ -77,6 +77,9 @@ def create_app(config_class=Config):
     app.register_blueprint(simulation_bp, url_prefix='/api/simulation')
     app.register_blueprint(report_bp, url_prefix='/api/report')
     
+    from .decision_lab.api import decision_bp
+    app.register_blueprint(decision_bp, url_prefix='/api/decision-lab')
+
     # Health check
     @app.route('/health')
     def health():
@@ -91,6 +94,12 @@ def create_app(config_class=Config):
         static_folder = app.static_folder
         if not static_folder or not os.path.isdir(static_folder):
             return {'error': 'Frontend not built'}, 404
+
+        if path == 'decision-lab' and os.path.isfile(os.path.join(static_folder, 'decision-lab.html')):
+            response = send_from_directory(static_folder, 'decision-lab.html')
+            response.headers['Cache-Control'] = 'no-store'
+            response.headers['Referrer-Policy'] = 'no-referrer'
+            return response
 
         if path:
             asset_path = os.path.join(static_folder, path)

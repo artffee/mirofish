@@ -4,6 +4,7 @@
     <nav class="navbar">
       <div class="nav-brand">MIROFISH</div>
       <div class="nav-links">
+        <RouterLink to="/decision-lab" class="github-link">Decision Lab ↗</RouterLink>
         <a href="https://github.com/666ghj/MiroFish" target="_blank" class="github-link">
           Visit our Github page <span class="arrow">↗</span>
         </a>
