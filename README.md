@@ -8,7 +8,7 @@ A swarm intelligence prediction engine. Upload documents describing any scenario
 
 ## Decision Lab prototype (added October 30, 2026)
 
-Compare two or three artwork, product, message or price alternatives at `/decision-lab`. Includes six invented perspectives, structured explanations, comparison charts and JSON/CSV/text downloads. The default rules demo runs without API keys or model calls; an explicitly enabled local-model adapter is optional. All results are synthetic and unvalidated, with no measured confidence or purchase predictions.
+Compare two or three artwork, product, message or price alternatives using the separate loopback launcher. The ordinary MiroFish server and frontend do not expose the lab. Includes six invented perspectives, structured explanations, comparison charts and JSON/CSV/text downloads. The default rules demo runs without API keys or model calls; an explicitly enabled local-model adapter is optional. All results are synthetic and unvalidated, with no measured confidence or purchase predictions.
 
 [Run the prototype and read its limitations](docs/decision-lab/README.md) · [Verification evidence](docs/decision-lab/VERIFICATION.md)
 

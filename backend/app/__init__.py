@@ -77,9 +77,6 @@ def create_app(config_class=None):
     app.register_blueprint(simulation_bp, url_prefix='/api/simulation')
     app.register_blueprint(report_bp, url_prefix='/api/report')
     
-    from .decision_lab.api import decision_bp
-    app.register_blueprint(decision_bp, url_prefix='/api/decision-lab')
-
     # Health check
     @app.route('/health')
     def health():
@@ -88,18 +85,12 @@ def create_app(config_class=None):
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
-        if path.startswith('api/') or path == 'health':
+        if path.startswith('api/') or path in ('health', 'decision-lab', 'decision-lab.html'):
             return {'error': 'Not found'}, 404
 
         static_folder = app.static_folder
         if not static_folder or not os.path.isdir(static_folder):
             return {'error': 'Frontend not built'}, 404
-
-        if path == 'decision-lab' and os.path.isfile(os.path.join(static_folder, 'decision-lab.html')):
-            response = send_from_directory(static_folder, 'decision-lab.html')
-            response.headers['Cache-Control'] = 'no-store'
-            response.headers['Referrer-Policy'] = 'no-referrer'
-            return response
 
         if path:
             asset_path = os.path.join(static_folder, path)

@@ -36,6 +36,7 @@ def settings():
         url = urlsplit(base)
         valid = (url.scheme == 'http' and url.hostname == '127.0.0.1' and url.port is not None
                  and 1024 <= url.port <= 65535 and url.path == '/v1' and not url.username
+                 and base == f'http://127.0.0.1:{url.port}/v1'
                  and not url.password and not url.query and not url.fragment and 0 < len(model) <= 150)
     except ValueError:
         valid = False
@@ -50,11 +51,21 @@ class LocalModel:
         base, self.model = configured
         from ..utils.llm_client import LLMClient
         import httpx
+        def restrict_request(request):
+            if request.method != 'POST' or str(request.url) != base + '/chat/completions':
+                raise ValueError('Unexpected local-model request.')
+            # The SDK can add organization, project, or arbitrary headers from the
+            # environment. Replace those at the final transport boundary.
+            request.headers.clear()
+            request.headers.update({'Host': request.url.netloc.decode('ascii'), 'Content-Type': 'application/json',
+                                    'Content-Length': str(len(request.content)), 'Authorization': 'Bearer local-no-key'})
+
         # Construct the safe transport before the SDK, so ambient proxies are never read.
         self.llm = LLMClient(
             provider='openai', api_key='local-no-key', base_url=base, model=self.model,
             max_retries=0, timeout=20,
-            http_client=httpx.Client(trust_env=False, follow_redirects=False, timeout=20),
+            http_client=httpx.Client(trust_env=False, follow_redirects=False, timeout=20,
+                                     event_hooks={'request': [restrict_request]}),
         )
 
     def respond(self, study, agent):

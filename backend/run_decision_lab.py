@@ -1,14 +1,20 @@
 """No-key standalone prototype. Serves the existing Vue build and Decision Lab only."""
 from pathlib import Path
-from flask import Flask, redirect, send_from_directory
+from flask import Flask, abort, redirect, request, send_from_directory
 from app.decision_lab.api import decision_bp
 
 
 def create_decision_app():
-    dist = Path(__file__).resolve().parents[1] / 'frontend' / 'dist'
+    dist = Path(__file__).resolve().parents[1] / 'frontend' / 'dist-decision-lab'
     app = Flask(__name__, static_folder=None)
-    app.config.update(MAX_CONTENT_LENGTH=65536, DEBUG=False, DECISION_LAB_STANDALONE=True)
+    app.config.update(MAX_CONTENT_LENGTH=65536, DEBUG=False, DECISION_LAB_STANDALONE=True,
+                      TRUSTED_HOSTS=['127.0.0.1', 'localhost'])
     app.register_blueprint(decision_bp, url_prefix='/api/decision-lab')
+
+    @app.before_request
+    def loopback_only():
+        if request.remote_addr not in ('127.0.0.1', '::1'):
+            abort(403)
 
     @app.get('/health')
     def health():
@@ -24,7 +30,7 @@ def create_decision_app():
             return {'error': 'This standalone server exposes Decision Lab only.'}, 404
         if path == 'decision-lab':
             if not (dist / 'decision-lab.html').exists():
-                return {'error': 'Build the frontend with npm --prefix frontend ci and npm run build.'}, 503
+                return {'error': 'Build the frontend with npm --prefix frontend ci and npm run build:decision-lab.'}, 503
             return send_from_directory(dist, 'decision-lab.html')
         return send_from_directory(dist, path)
 
@@ -40,4 +46,4 @@ def create_decision_app():
 
 
 if __name__ == '__main__':
-    create_decision_app().run(host='127.0.0.1', port=5001, debug=False, use_reloader=False)
+    create_decision_app().run(host='127.0.0.1', port=5002, debug=False, use_reloader=False)

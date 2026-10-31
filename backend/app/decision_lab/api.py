@@ -23,7 +23,8 @@ def protect_request():
                 parsed = urlsplit(origin)
             except ValueError:
                 return jsonify(error='Invalid request origin.'), 403
-            if parsed.netloc != request.host or parsed.scheme not in ('http', 'https'):
+            if (parsed.netloc != request.host or parsed.scheme != request.scheme
+                    or parsed.path or parsed.query or parsed.fragment):
                 return jsonify(error='Cross-origin studies are not accepted.'), 403
 
 
@@ -55,6 +56,8 @@ def capabilities():
 def run():
     try:
         study = validate_request(request.get_json())
+    except RecursionError:
+        return jsonify(error='Study is nested too deeply.'), 400
     except InputError as error:
         return jsonify(error=str(error)), 400
     if study['mode'] == 'fixture':

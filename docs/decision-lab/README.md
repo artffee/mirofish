@@ -1,6 +1,6 @@
 # MiroFish Decision Lab — first prototype
 
-Modified October 30, 2026. This addition is licensed under the repository's existing **AGPL-3.0** license. It adds an isolated `/decision-lab` workflow; it does not replace MiroFish's graph, social-media simulation or reporting workflows.
+Modified October 31, 2026. This addition is licensed under the repository's existing **AGPL-3.0** license. It adds an isolated `/decision-lab` workflow; it does not replace MiroFish's graph, social-media simulation or reporting workflows.
 
 Decision Lab compares two or three alternatives for a stated audience, business question and scenario. It returns six structured synthetic perspectives, per-alternative explanations, count bars, an explicit abstention option, and downloadable JSON, CSV and text reports.
 
@@ -13,22 +13,22 @@ Requirements: Python 3.11 or 3.12, Node.js 20.19+ or 22.12+ (Vite 7), and npm. I
 From the repository root:
 
 ```bash
-git switch codex/decision-lab-prototype
+git switch main
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r backend/requirements-decision-lab.txt
 npm --prefix frontend ci
-npm run build
+npm run build:decision-lab
 python backend/run_decision_lab.py
 ```
 
-Open **http://127.0.0.1:5001/decision-lab**. The server binds to loopback with debug and reloading disabled. The standalone server exposes only the new API and the built Vue application. It does not expose the original upload or simulation APIs.
+Open **http://127.0.0.1:5002/decision-lab**. The server binds to loopback with debug and reloading disabled. The standalone server exposes only the new API and the dedicated lab bundle. It does not expose the original upload or simulation APIs.
 
 On Windows, activate with `.venv\Scripts\activate` instead of the `.` command. Use `python` instead of `python3` when appropriate.
 
-For frontend editing, leave that backend running and use `npm --prefix frontend run dev` in a second terminal. Open the Vite URL at `/decision-lab`. The dedicated proxy preserves Host for the endpoint's same-origin check. Do not change its `changeOrigin` to true.
+Decision Lab is served **only** by this standalone runner. It accepts loopback peers and local Host names, rejects cross-origin submissions, and does not use a public tunnel. Keep it on your machine; do not forward its port. To pick up UI edits, rebuild with `npm run build:decision-lab` and refresh.
 
-For an already configured full MiroFish installation, the existing `npm run dev` workflow remains available. The homepage now links to Decision Lab, and the full Flask app registers `/api/decision-lab` alongside its existing blueprints. Original MiroFish operations retain their original provider configuration and may incur their original provider costs; the new lab's rules endpoint does not invoke them.
+The ordinary MiroFish build (`npm run build`), router, Docker image frontend, and full Flask application do not include the working lab. The full server does not register the lab API; it returns 404 for the lab page and capabilities. The standalone build writes `frontend/dist-decision-lab/`, separately from `frontend/dist/`. The original graph, simulation and reporting workflows keep their existing provider configuration; this launcher starts none of them.
 
 ## Try it
 
@@ -77,6 +77,8 @@ No model is downloaded or started automatically. Do not point this address at a 
 
 The UI enables Local AI only after the backend reports valid explicit configuration. It makes at most six sequential calls per run, each with a 1,100 output-token cap, 20-second network-operation timeouts and zero automatic retries. One model run is allowed at a time per Python process. Invalid or partial output fails the whole run with a generic error; it is never silently replaced by fixture results. The browser times out at 140 seconds; server inference may finish after a browser disconnect. Model throughput and HTTP operation timing determine actual duration.
 
+For a first real-model check, keep external inference and forwarding disabled and use the supplied artwork example without personal data. Select **Local AI**, run it, and verify the actual server saw six local completions, every alternative was evaluated, selections total six (including abstentions), and the export names the model and still reports zero human participants. Stop the model and retry to check failure is reported without substituting rules results. Different choices from the fixture are expected; validation against real buyers is a separate task.
+
 Response schemas allow only choices, reasons, tradeoffs, follow-up questions and per-option appeals/concerns. Numeric aggregates are computed in application code. No confidence or success score is accepted from the model. Canonical option ordering is rotated across perspectives; this reduces a simple position artifact but does not validate the model or guarantee reproducibility.
 
 ## Information handling
@@ -86,10 +88,10 @@ Response schemas allow only choices, reasons, tradeoffs, follow-up questions and
 - Text imports are UTF-8 `.txt`, at most 12 KB and 6,000 characters, read in the browser. Their contents are transmitted on Run, and to the local model only in Local AI mode. Do not use confidential or personal information in this prototype.
 - PNG/JPEG/WebP previews are capped at 5 MB and decoded locally. Blob URLs are released on removal, reset and unmount. Image bytes and filenames are excluded from study requests and reports; no image-processing provider is contacted.
 - Lab API responses use `Cache-Control: no-store`. Its dedicated HTML entry has no external fonts or analytics. The standalone server adds a restrictive CSP and no-referrer header. Ordinary server access logs can still contain routes, timestamps and client addresses.
-- Full MiroFish's debug request-body logger explicitly skips this namespace. Provider exception details are not echoed or logged by the endpoint. SDK request-body debug messages are suppressed in the lab's inference context. Operators must separately control local model, reverse-proxy, infrastructure or monitoring logs.
+- The full MiroFish server has no lab API and skips debug body logging for this namespace. Provider exception details are not echoed or logged by the endpoint. SDK request-body debug messages are suppressed in the lab's inference context. Operators must separately control local model, reverse-proxy, infrastructure or monitoring logs.
 - Model content is untrusted data. The UI uses escaped Vue interpolation, never model-provided HTML. Prompts separate instructions from study data, no tools are exposed, and outputs are validated. These measures do not make prompt injection or model bias impossible.
 - CSV cells neutralize formula prefixes, including leading whitespace, and quote multiline text. JSON and plain-text exports retain complete labels and provenance. Exported files may contain the study text; share them deliberately.
-- This is a **local single-user prototype without authentication**, not a public SaaS deployment. Same-origin JSON checks prevent simple cross-site submissions; they are not authentication. Before remote multi-user use, add access control, TLS, per-user quotas, lifecycle controls and a reviewed privacy/retention policy. Existing MiroFish upload behavior outside this namespace is unchanged and is not claimed to meet these guarantees.
+- This is a **local single-user prototype without authentication**, not a public SaaS deployment. Same-origin JSON checks prevent simple cross-site submissions; they are not authentication. Before remote multi-user use, add authentication and per-user study isolation; TLS with authenticated sessions and CSRF protection; request, model and resource quotas; cancellation/timeouts; and a reviewed policy for logging, retention, export and deletion. Verify cross-account access denial and abuse limits before opening a route. Existing MiroFish upload behavior outside this namespace is unchanged and is not claimed to meet these guarantees.
 
 ## API and validation
 
@@ -98,7 +100,7 @@ Response schemas allow only choices, reasons, tradeoffs, follow-up questions and
 `POST /api/decision-lab/run` requires `Content-Type: application/json` and `X-Decision-Lab: 1`. Cross-origin browser POSTs are rejected. See [`example-study.json`](example-study.json) for the complete schema:
 
 ```bash
-curl http://127.0.0.1:5001/api/decision-lab/run \
+curl http://127.0.0.1:5002/api/decision-lab/run \
   -H 'Content-Type: application/json' -H 'X-Decision-Lab: 1' \
   --data-binary @docs/decision-lab/example-study.json
 ```
@@ -114,13 +116,16 @@ python -m pip install -r backend/requirements-decision-lab-test.txt
 python -m pytest backend/tests -q
 node --test frontend/tests/*.test.js
 npm run build
+npm run build:decision-lab
 ```
+
+Optional browser regression: with the lab running, Playwright installed in your QA environment, and its Chromium browser installed, run `node frontend/tests/decisionLab.browser.cjs`. If Playwright is installed outside the checkout, set `NODE_PATH` to that environment's node_modules; set `CHROMIUM_PATH` only to use a separate Chromium binary. This is test tooling, not an application dependency.
 
 See [`VERIFICATION.md`](VERIFICATION.md) for actual results and unverified boundaries. No model credentials are needed for the test suite. The adapter test uses an in-process mock transport and makes no inference or external network requests.
 
 ## Source, license and references
 
-The original `LICENSE` and notices are retained. The UI provides a prominent source link to this branch. Keep that link pointed at the corresponding source of any deployed modified version, including build instructions. AGPL-3.0 permits commercial use subject to its terms; its network-interaction provisions matter for a modified hosted service. This implementation does not convert the project to a proprietary license.
+The original `LICENSE` and notices are retained. The UI links to the repository’s main source tree. Keep that link pointed at the corresponding source of any deployed modified version, including build instructions. AGPL-3.0 permits commercial use subject to its terms; its network-interaction provisions matter for a modified hosted service. This implementation does not convert the project to a proprietary license.
 
 - [Repository license](../../LICENSE)
 - [GNU AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html), particularly sections 5 and 13

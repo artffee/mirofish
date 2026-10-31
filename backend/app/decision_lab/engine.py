@@ -4,7 +4,6 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
-import math
 
 from ..models.agent_profile import OasisAgentProfile
 
@@ -33,11 +32,15 @@ class InputError(ValueError):
 def text_field(value, name, maximum, required=True):
     if not isinstance(value, str) or len(value) > maximum or (required and not value.strip()):
         raise InputError(f'{name} must be text between {1 if required else 0} and {maximum} characters.')
+    try:
+        value.encode('utf-8')
+    except UnicodeEncodeError:
+        raise InputError(f'{name} must be valid Unicode text.') from None
     return value.strip()
 
 
 def number(value, name, minimum=0):
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or not minimum <= value <= 100000:
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not minimum <= value <= 100000:
         raise InputError(f'{name} must be a finite number from {minimum} to 100000.')
     return round(value, 2)
 

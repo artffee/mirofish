@@ -7,10 +7,9 @@
         ><span>MIROFISH <b>Decision Lab</b></span></a
       >
       <nav aria-label="Lab navigation">
-        <RouterLink v-if="!standalone" to="/">MiroFish home ↗</RouterLink
-        ><span v-else>Standalone prototype</span
+        <span>Local prototype</span
         ><a
-          href="https://github.com/artffee/mirofish/tree/codex/decision-lab-prototype"
+          href="https://github.com/artffee/mirofish/tree/main"
           target="_blank"
           rel="noopener noreferrer"
           >Source · AGPL-3.0 ↗</a
@@ -547,7 +546,6 @@ const busy = ref(false);
 const error = ref("");
 const apiReady = ref(false);
 const localEnabled = ref(false);
-const standalone = ref(false);
 let controller;
 let sessionVersion = 0;
 watch(
@@ -729,7 +727,7 @@ onMounted(async () => {
     });
     if (!response.ok) throw new Error();
     const capabilities = await response.json();
-    standalone.value = capabilities.standalone === true;
+    if (capabilities.standalone !== true) throw new Error();
     localEnabled.value = capabilities.local_llm_enabled === true;
     apiReady.value = true;
   } catch {
@@ -743,6 +741,11 @@ onBeforeUnmount(() => {
   releaseImages();
 });
 </script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+button { font-family: inherit; }
+</style>
 
 <style scoped>
 .decision-lab {
@@ -1295,6 +1298,12 @@ th {
   gap: 15px;
   font-size: 12px;
   margin-bottom: 7px;
+}
+.results-panel {
+  overflow-wrap: anywhere;
+}
+.chart-label strong {
+  flex-shrink: 0;
 }
 .chart-label small {
   font-weight: 400;

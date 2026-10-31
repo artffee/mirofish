@@ -218,6 +218,9 @@ def test_local_adapter_uses_bounded_non_network_mock_transport(study, monkeypatc
     monkeypatch.setenv('DECISION_LAB_ENABLE_LOCAL_LLM','1')
     monkeypatch.setenv('DECISION_LAB_LOCAL_URL','http://127.0.0.1:11434/v1')
     monkeypatch.setenv('DECISION_LAB_LOCAL_MODEL','fake-model')
+    monkeypatch.setenv('OPENAI_ORG_ID', 'do-not-send-org')
+    monkeypatch.setenv('OPENAI_PROJECT_ID', 'do-not-send-project')
+    monkeypatch.setenv('OPENAI_CUSTOM_HEADERS', 'X-Custom-Secret: do-not-send-header')
     transport_requests = []
     real_client = httpx.Client
     def handler(request):
@@ -238,6 +241,7 @@ def test_local_adapter_uses_bounded_non_network_mock_transport(study, monkeypatc
         payload = json.loads(request.content)
         assert str(request.url) == 'http://127.0.0.1:11434/v1/chat/completions'
         assert request.headers['authorization'] == 'Bearer local-no-key'
+        assert 'do-not-send' not in str(request.headers)
         assert payload['max_tokens'] == 1100
         assert 'tools' not in payload
         assert payload['messages'][0]['role'] == 'system'
@@ -252,7 +256,7 @@ def test_original_profile_import_compatibility():
     assert profile.to_reddit_format()['persona'] == 'Persona'
 
 
-def test_full_app_registration_and_body_logging_suppression(study, tmp_path):
+def test_ordinary_mirofish_keeps_original_routes_and_does_not_expose_lab(study, tmp_path):
     from app import create_app
     from app.config import Config
     class TestConfig(Config):
@@ -260,7 +264,8 @@ def test_full_app_registration_and_body_logging_suppression(study, tmp_path):
         GRAPH_BACKEND = 'json'
         DATA_DIR = str(tmp_path)
     app = create_app(TestConfig)
-    assert {'graph','simulation','report','decision_lab'} <= set(app.blueprints)
+    assert {'graph','simulation','report'} <= set(app.blueprints)
+    assert 'decision_lab' not in app.blueprints
     captured = []
     class Capture(logging.Handler):
         def emit(self, record): captured.append(record.getMessage())
@@ -269,8 +274,12 @@ def test_full_app_registration_and_body_logging_suppression(study, tmp_path):
     logger.addHandler(handler)
     try:
         study['context'] = 'private-study-marker'
-        response = post(app.test_client(), study)
-        assert response.status_code == 200
+        client = app.test_client()
+        assert post(client, study).status_code in (404, 405)
+        for path in ('/decision-lab', '/decision-lab.html', '/api/decision-lab/capabilities'):
+            assert client.get(path).status_code == 404
+        for path in ('/api/graph/project/list', '/api/simulation/list', '/api/report/list'):
+            assert client.get(path).status_code == 200
         assert 'private-study-marker' not in '\n'.join(captured)
         assert app.test_client().get('/health').json['status'] == 'ok'
     finally: logger.removeHandler(handler)
@@ -306,3 +315,26 @@ def test_local_sdk_debug_logs_are_suppressed_and_context_restored(study):
     finally:
         logger.removeHandler(handler)
         logger.setLevel(old_level)
+
+
+def test_no_nonlocal_peers_or_rebound_hosts(client, study):
+    assert client.get('/health', headers={'Host': 'attacker.example'}).status_code == 400
+    remote = {'REMOTE_ADDR': '192.0.2.12'}
+    assert client.get('/health', environ_overrides=remote).status_code == 403
+    assert client.post('/api/decision-lab/run', json=study, headers={'X-Decision-Lab':'1',
+                       'X-Forwarded-For':'127.0.0.1'}, environ_overrides=remote).status_code == 403
+    assert post(client, study, Origin='https://localhost').status_code == 403
+
+
+@pytest.mark.parametrize('field,value', [('budget', 10**400), ('context', chr(0xd800))])
+def test_invalid_json_scalar_returns_client_error(client, study, field, value):
+    study[field] = value
+    response = post(client, study)
+    assert response.status_code == 400
+    assert response.headers['Cache-Control'] == 'no-store'
+
+
+def test_deep_json_is_a_client_error(client):
+    response = client.post('/api/decision-lab/run', data='[' * 4000 + ']' * 4000,
+                           content_type='application/json', headers={'X-Decision-Lab':'1'})
+    assert response.status_code == 400
