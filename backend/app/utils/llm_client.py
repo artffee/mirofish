@@ -22,7 +22,11 @@ class LLMClient:
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         model: Optional[str] = None,
-        provider: Optional[str] = None
+        provider: Optional[str] = None,
+        *,
+        http_client=None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None
     ):
         self.api_key = api_key or Config.LLM_API_KEY
         self.base_url = base_url or Config.LLM_BASE_URL
@@ -53,9 +57,17 @@ class LLMClient:
             self.client = None  # CLI-based, no SDK client needed
         else:
             from openai import OpenAI
+            options = {}
+            if http_client is not None:
+                options['http_client'] = http_client
+            if timeout is not None:
+                options['timeout'] = timeout
+            if max_retries is not None:
+                options['max_retries'] = max_retries
             self.client = OpenAI(
                 api_key=self.api_key,
-                base_url=self.base_url
+                base_url=self.base_url,
+                **options
             )
 
     def _detect_provider(self) -> str:

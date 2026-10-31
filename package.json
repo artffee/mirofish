@@ -9,7 +9,10 @@
     "dev": "concurrently --kill-others -n \"backend,frontend\" -c \"green,cyan\" \"npm run backend\" \"npm run frontend\"",
     "backend": "cd backend && uv run python run.py",
     "frontend": "cd frontend && npm run dev",
-    "build": "cd frontend && npm run build"
+    "build": "cd frontend && npm run build",
+    "build:decision-lab": "npm --prefix frontend run build -- --config vite.decision-lab.config.js",
+    "decision-lab": "python backend/run_decision_lab.py",
+    "test:decision-lab": "python -m pytest backend/tests -q && node --test frontend/tests/*.test.js"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

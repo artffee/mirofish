@@ -12,13 +12,13 @@ warnings.filterwarnings("ignore", message=".*resource_tracker.*")
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 
-from .config import Config
-from .services.graph_storage import JSONStorage, KuzuDBStorage
-from .utils.logger import setup_logger, get_logger
 
-
-def create_app(config_class=Config):
+def create_app(config_class=None):
     """Flask application factory function"""
+    from .config import Config
+    from .services.graph_storage import JSONStorage, KuzuDBStorage
+    from .utils.logger import setup_logger, get_logger
+    config_class = config_class or Config
     frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../frontend/dist'))
     app = Flask(__name__, static_folder=frontend_dist if os.path.isdir(frontend_dist) else None)
     app.config.from_object(config_class)
@@ -62,7 +62,7 @@ def create_app(config_class=Config):
     def log_request():
         logger = get_logger('mirofish.request')
         logger.debug(f"Request: {request.method} {request.path}")
-        if app.config.get('DEBUG') and request.content_type and 'json' in request.content_type:
+        if not request.path.startswith('/api/decision-lab') and app.config.get('DEBUG') and request.content_type and 'json' in request.content_type:
             logger.debug(f"Request body: {request.get_json(silent=True)}")
     
     @app.after_request
@@ -85,7 +85,7 @@ def create_app(config_class=Config):
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
-        if path.startswith('api/') or path == 'health':
+        if path.startswith('api/') or path in ('health', 'decision-lab', 'decision-lab.html'):
             return {'error': 'Not found'}, 404
 
         static_folder = app.static_folder
